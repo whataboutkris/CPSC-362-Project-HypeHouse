@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+    <header class="flex justify-between items-center p-4 bg-gray-800 text-white">
+        <h1 class="text-3xl font-bold">HypeHouse</h1> 
+            <ul class="flex flex-row gap-4 text-lg font-semibold text-gray-300 items-center">
+                <li><a href="/" class="hover:text-white">Home</a></li>
+                <li><a href="/about" class="hover:text-white">About</a></li>
+                <li>
+                  <button
+                    class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+                    hx-get="/login"
+                    hx-target="#content"
+                    hx-swap="innerHTML"
+                    hx-trigger="click"
+                  >
+                    Login
+                  </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+      {% block content %}
+      {% endblock content %}
+    </main>
+    <footer>
+        <p>&copy; 2023 My Web Page</p>
+    </footer>
+</body>
+</html>
