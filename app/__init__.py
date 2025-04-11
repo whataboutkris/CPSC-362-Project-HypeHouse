@@ -35,5 +35,4 @@ def create_app():
   app.register_blueprint(main) # Main blueprint is routing for the views and templates
   app.register_blueprint(api, url_prefix="/api") # API blueprint is routing for the API
   app.register_blueprint(htmx, url_prefix="/htmx") # HTMX blueprint is routing for the HTMX calls
-
   return app
