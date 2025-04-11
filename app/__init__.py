@@ -21,6 +21,7 @@ def create_app():
   # TODO: set config from environment variables
   app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
   app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+  app.config["TEMPLATES_AUTO_RELOAD"] = True
 
   db.init_app(app)
 
