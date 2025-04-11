@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint
 
-authentication_blueprint = Blueprint('authentication', __name__)
+auth = Blueprint('auth', __name__)
 
 '''
 

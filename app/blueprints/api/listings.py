@@ -1,5 +1,63 @@
 from flask import Blueprint, jsonify, request
 
+"""
+Blueprint for managing listings and bookings.
+Routes:
+  /listings (GET):
+    Retrieve all listings from the database.
+    Returns:
+      JSON response containing a list of all listings with their details.
+  /listings/<int:id> (GET, PUT, DELETE):
+    - GET:
+      Retrieve a specific listing by its ID.
+      Parameters:
+        id (int): The ID of the listing to retrieve.
+      Returns:
+        JSON response containing the details of the specified listing.
+    - PUT:
+      Update a specific listing by its ID.
+      Parameters:
+        id (int): The ID of the listing to update.
+        JSON body:
+          title (str, optional): The new title of the listing.
+          name (str, optional): The new name of the listing.
+          description (str, optional): The new description of the listing.
+          photos (list of str, optional): The new photos of the listing.
+          price (float, optional): The new price of the listing.
+      Returns:
+        JSON response with a success message upon successful update.
+    - DELETE:
+      Delete a specific listing by its ID.
+      Parameters:
+        id (int): The ID of the listing to delete.
+      Returns:
+        JSON response with a success message upon successful deletion.
+  /listings/<int:id>/bookings (GET, POST, DELETE):
+    - GET:
+      Retrieve all bookings for a specific listing by its ID.
+      Parameters:
+        id (int): The ID of the listing whose bookings are to be retrieved.
+      Returns:
+        JSON response containing a list of all bookings for the specified listing.
+    - POST:
+      Create a new booking for a specific listing by its ID.
+      Parameters:
+        id (int): The ID of the listing to create a booking for.
+        JSON body:
+          host_id (int): The ID of the host for the booking.
+          booker_id (int): The ID of the booker for the booking.
+          start_date (str): The start date of the booking (YYYY-MM-DD format).
+          end_date (str): The end date of the booking (YYYY-MM-DD format).
+      Returns:
+        JSON response with a success message upon successful creation of the booking.
+    - DELETE:
+      Delete the first booking for a specific listing by its ID.
+      Parameters:
+        id (int): The ID of the listing whose booking is to be deleted.
+      Returns:
+        JSON response with a success message upon successful deletion of the booking.
+"""
+
 listings = Blueprint("listings", __name__)
 
 from app.db import db
