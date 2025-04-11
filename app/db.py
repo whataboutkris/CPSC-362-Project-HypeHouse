@@ -12,6 +12,9 @@ class User:
     email = unique
     password_hash = hashed password
     phone_number = unique
+    is_host = True if the user is a host, False otherwise
+    bookings = relationship to Booking table
+    listings = relationship to Listing table
 '''
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -19,7 +22,9 @@ class User(db.Model):
     email = db.Column(db.String(100), unique = True, nullable = False)
     phone_number = db.Column(db.String(15), nullable = False)
     password_hash = db.Column(db.String(128), nullable = False)
-
+    is_host = db.Column(db.Boolean, default = False)  # True if the user is a host, False otherwise
+    bookings = db.relationship('Booking', backref='user', lazy=True)  # Relationship to Booking table
+    listings = db.relationship('Listing', backref='user', lazy=True)  # Relationship to Listing table
 '''
 class Session:
     id, user_id, token, expiration
