@@ -17,7 +17,7 @@ bookings = [
 '''
 Shows all bookings
 '''
-@property_blueprint.route('/api/bookings', methods=['GET'])
+@property_blueprint.route('/bookings', methods=['GET'])
 def get_bookings():
     return jsonify(bookings)
 
@@ -25,7 +25,7 @@ def get_bookings():
 '''
 Creates a new booking
 '''
-@property_blueprint.route('/api/bookings', methods=['POST'])
+@property_blueprint.route('/bookings', methods=['POST'])
 def add_booking():
     new_booking = request.json
     bookings.append(new_booking)
@@ -34,7 +34,7 @@ def add_booking():
 '''
 Deletes an existing booking
 '''
-@property_blueprint.route('/api/bookings/<int:booking_id>', methods=['DELETE'])
+@property_blueprint.route('/bookings/<int:booking_id>', methods=['DELETE'])
 def delete_booking(booking_id):
     booking = next((b for b in bookings if b["id"] == booking_id), None)
     if booking:
