@@ -1,11 +1,39 @@
 {% extends 'ui/base.html' %}
 {% block title %}HypeHouse{% endblock %}
 {% block content %}
-    <sl-tab-group>
-        <sl-tab slot="nav" panel="Listings">Listings</sl-tab>
-        <sl-tab slot="nav" panel="Bookings">Bookings</sl-tab>
+<sl-tab-group>
+    <sl-tab slot="nav" panel="Listings">Listings</sl-tab>
+    <sl-tab slot="nav" panel="Bookings">Bookings</sl-tab>
 
-    </sl-tab-group>
+    <sl-tab-panel name="Listing">
+        <sl-card class="House-Overview">
+            <img slot="img" src="https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg"
+                alt="a house just to vibe in" />
+            <strong>Home</strong><br />
+            come have a a fun time here!<br />
+            <small>price per night</small>
+
+            <div slot="footer">
+                <sl-button variant="primary" pill>Book</sl-button>
+                <sl-rating></sl-rating>
+            </div>
+        </sl-card>
+        <style>
+            .House-Overview {
+                max-width: 200px;
+            }
+
+            /* .House_Overview{
+                color: var(--sl-color-neutral-500);
+            } */
+            .card-overview [slot='footer'] {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        </style>
+</sl-tab-group>
+</sl-tab-group>
 
 
 {% endblock %}
