@@ -7,11 +7,11 @@ Routes:
     Retrieve all listings from the database.
     Returns:
       JSON response containing a list of all listings with their details.
-  /listings/<int:id> (GET, PUT, DELETE):
+  /listings/<int:id> (GET, PATCH, DELETE):
     Retrieve, update, or delete a specific listing by ID.
     Methods:
       GET: Retrieve details of a specific listing.
-      PUT: Update details of a specific listing.
+      PATCH: Update details of a specific listing.
       DELETE: Delete a specific listing from the database.
     Returns:
       JSON response with the details of the listing, or a success message for updates/deletes.
@@ -48,7 +48,7 @@ def get_listings():
     listings = Listing.query.all()
     return jsonify([listings.to_dict() for listing in listings]), 200
 
-@listings.route("/listings/<int:id>", methods=["GET", "POST", "PUT", "DELETE"])
+@listings.route("/listings/<int:id>", methods=["GET", "POST", "PATCH", "DELETE"])
 def listing(id):
     listing = Listing.query.get_or_404(id)
     
@@ -69,7 +69,7 @@ def listing(id):
         db.session.commit()
         return jsonify({"message": "Listing created successfully"}), 201
     
-    elif request.method == "PUT":
+    elif request.method == "PATCH":
         data = request.get_json()
         listing.title = data.get("title", listing.title)
         listing.name = data.get("name", listing.name)
