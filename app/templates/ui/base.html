@@ -5,12 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Web Page</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
     <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
     <header class="flex justify-between items-center p-4 bg-gray-800 text-white">
         <h1 class="text-3xl font-bold">HypeHouse</h1> 
+        {% if request.endpoint=='/dashboard' %}
+          <ul>
+            <sl-dropdown>
+              <sl-avatar slot="trigger" label="User avatar"></sl-avatar>
+              <sl-menu>
+                <sl-menu-item>Home</sl-menu-item>
+                <sl-menu-item>Settings</sl-menu-item>
+              </sl-menu>
+            </sl-dropdown>      
+          </ul>
+          {% endif %}
+          {% if request.endpoint!="/dashboard" %}
             <ul class="flex flex-row gap-4 text-lg font-semibold text-gray-300 items-center">
                 <li><a href="/" class="hover:text-white">Home</a></li>
                 <li><a href="/about" class="hover:text-white">About</a></li>
@@ -26,6 +40,7 @@
                   </button>
                 </li>
             </ul>
+            {% endif %}
         </nav>
     </header>
     <main>
