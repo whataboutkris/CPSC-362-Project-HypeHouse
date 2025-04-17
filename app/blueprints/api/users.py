@@ -13,14 +13,14 @@ def get_users():
 
 # handle user creation somewhere else? (maybe)
 
-@users.route("/users/<int:id>", methods=["GET", "PUT", "DELETE"])
+@users.route("/users/<int:id>", methods=["GET", "PATCH", "DELETE"])
 def user(id):
     user = User.query.get_or_404(id)
     
     if request.method == "GET":
         return jsonify(user.to_dict()), 200
     
-    elif request.method == "PUT":
+    elif request.method == "PATCH":
         data = request.get_json()
         user.name = data.get("name", user.name)
         user.email = data.get("email", user.email)
