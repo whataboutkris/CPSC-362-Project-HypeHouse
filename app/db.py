@@ -1,6 +1,6 @@
 # app/db.py
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_login import UserMixin
 # Initialize the db object
 db = SQLAlchemy()
 
@@ -16,7 +16,7 @@ class User:
     bookings = relationship to Booking table
     listings = relationship to Listing table
 '''
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(100), nullable = False)
     email = db.Column(db.String(100), unique = True, nullable = False)
@@ -25,6 +25,15 @@ class User(db.Model):
     is_host = db.Column(db.Boolean, default = False)  # True if the user is a host, False otherwise
     bookings = db.relationship('Booking', backref='user', lazy=True)  # Relationship to Booking table
     listings = db.relationship('Listing', backref='user', lazy=True)  # Relationship to Listing table
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "phone_number": self.phone_number,
+            "is_host": self.is_host
+        }
 '''
 class Session:
     id, user_id, token, expiration
