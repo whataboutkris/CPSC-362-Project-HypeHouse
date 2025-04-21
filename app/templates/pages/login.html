@@ -1,10 +1,25 @@
-{% extends 'ui/base.html' %}
-{% block title %}Login{% endblock %}
-{% block content %}
 
-<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <header class="w-full bg-white shadow p-6">
+        <h1 class="text-9xl font-extrabold text-center text-blue-600">
+          HypeHouse
+        </h1>
+      </header>
+
+
+<div class="flex flex-col items-center justify-start min-h-screen pt-20 bg-gray-100">
   <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-      <h2 class="text-2xl font-bold text-center">Login</h2>
+      <h1 class="text-2xl font-bold text-center">Login</h1>
       <form method="POST" action="/login" class="space-y-6">
           <div>
               <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
@@ -21,9 +36,7 @@
               Login
           </button>
       </form>
-      {% if error %}
-      <p class="text-red-500 text-sm mt-4">{{ error }}</p>
-      {% endif %}
+      <p class="text-red-500 text-sm mt-4">Invalid username or password.</p>
   </div>
   <div class="mt-4">
 
@@ -36,5 +49,5 @@
       <p class="text-sm text-gray-600">Don't have an account? <a href="/register" class="text-blue-600 hover:underline">Register</a></p>
   </div>
 </div>
-
-{% endblock %}
+</body>
+</html>
