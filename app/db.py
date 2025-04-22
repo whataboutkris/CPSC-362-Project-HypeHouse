@@ -23,8 +23,9 @@ class User(UserMixin, db.Model):
     phone_number = db.Column(db.String(15), nullable = False)
     password_hash = db.Column(db.String(128), nullable = False)
     is_host = db.Column(db.Boolean, default = False)  # True if the user is a host, False otherwise
-    bookings = db.relationship('Booking', backref='user', lazy=True)  # Relationship to Booking table
-    listings = db.relationship('Listing', backref='user', lazy=True)  # Relationship to Listing table
+    # bookings = db.relationship('Booking', backref='user', lazy=True)  # Relationship to Booking table
+    listings = db.relationship('Listing', foreign_keys='Listing.host_id', backref='host', lazy=True)
+  # Relationship to Listing table
 
     def to_dict(self):
         return {
@@ -34,6 +35,10 @@ class User(UserMixin, db.Model):
             "phone_number": self.phone_number,
             "is_host": self.is_host
         }
+    hosted_bookings = db.relationship('Booking', foreign_keys='Booking.host_id', backref='host_user', lazy=True)
+
+    booked_reservations = db.relationship('Booking', foreign_keys='Booking.booker_id', backref='booker_user', lazy=True)
+
 '''
 class Session:
     id, user_id, token, expiration
