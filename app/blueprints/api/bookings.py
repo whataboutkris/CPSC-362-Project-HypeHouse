@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flask_login import login_required
 
 property_blueprint = Blueprint('property', __name__)
 
@@ -18,6 +19,7 @@ bookings = [
 Shows all bookings
 '''
 @property_blueprint.route('/bookings', methods=['GET'])
+@login_required
 def get_bookings():
     return jsonify(bookings)
 
@@ -26,6 +28,7 @@ def get_bookings():
 Creates a new booking
 '''
 @property_blueprint.route('/bookings', methods=['POST'])
+@login_required
 def add_booking():
     new_booking = request.json
     bookings.append(new_booking)
@@ -35,6 +38,7 @@ def add_booking():
 Deletes an existing booking
 '''
 @property_blueprint.route('/bookings/<int:booking_id>', methods=['DELETE'])
+@login_required
 def delete_booking(booking_id):
     booking = next((b for b in bookings if b["id"] == booking_id), None)
     if booking:

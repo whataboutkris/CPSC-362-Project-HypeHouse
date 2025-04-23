@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flask_login import login_required
 
 """
 Blueprint for managing listings and bookings.
@@ -44,11 +45,13 @@ from app.db import db
 from app.db import Listing
 
 @listings.route("/listings", methods=["GET"])
+@login_required
 def get_listings():
     listings = Listing.query.all()
     return jsonify([listings.to_dict() for listing in listings]), 200
 
 @listings.route("/listings/<int:id>", methods=["GET", "POST", "PATCH", "DELETE"])
+@login_required
 def listing(id):
     listing = Listing.query.get_or_404(id)
     
