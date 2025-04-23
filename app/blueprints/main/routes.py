@@ -19,6 +19,7 @@ def login_page():
 @main.route("/dashboard")
 def dashboard():
     listings = Listing.query.all() 
+    bookings = Booking.query.all()
     image_list = [
         "https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg",
         "https://media.timeout.com/images/105931772/750/562/image.jpg",
@@ -27,12 +28,19 @@ def dashboard():
         "https://i.pinimg.com/736x/2d/7d/41/2d7d414222ac5baba7b529d596e7f0b8.jpg"
         
     ]
-    return render_template("pages/dashboard.html", image_list=image_list)
+    return render_template("pages/dashboard.html", listings=listings, bookings=bookings, image_list=image_list)
 
 @main.route("/booking/<int:house_id>")
 def booking(house_id):
-    listing = Listing.query.get_or_404(house_id)
-    owner = User.query.get(listing.host_id)
+    listing = {
+        'id': house_id,
+        'title': 'Sample House',
+        'description': 'Sample description for this home.',
+        'price': 150,
+        'photos': "https://placehold.co/300x150"
+    }
+    owner = { 'name': 'Test Owner' }
+
     return render_template("pages/booking.html", house=listing, owner=owner)
 
 @main.route("/confirm_booking", methods=["POST"])
@@ -40,10 +48,10 @@ def confirm_booking():
     listing_id = request.form['listing_id']
     start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
     end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d')
-    booker_id = session.get('user_id')  # or current_user.id if using Flask-Login
 
+    booker_id = session.get('user_id') or 1  # fallback for testing
     listing = Listing.query.get_or_404(listing_id)
-    host_id = listing.owner_id
+    host_id = listing.host_id
 
     new_booking = Booking(
         listing_id=listing_id,
@@ -57,4 +65,4 @@ def confirm_booking():
     db.session.commit()
 
     flash('✅ Booking confirmed!')
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('main.dashboard'))

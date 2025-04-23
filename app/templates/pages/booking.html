@@ -1,0 +1,36 @@
+{% extends 'ui/base.html' %}
+{% block title %}HypeHouse{% endblock %}
+{% block content %}
+
+<div style="display: flex; gap: 2rem; align-items: flex-start; padding: 2rem; flex-wrap: wrap;">
+
+  <!-- Left Side: Text & Form -->
+  <div style="flex: 1; min-width: 300px;">
+    <h1 class="text-3xl font-bold mb-2">{{ house.title }}</h1>
+    <p class="mb-4">{{ house.description }}</p>
+    <p class="text-xl font-semibold mb-2">${{ house.price }} per night</p>
+
+    <sl-rating value="{{ house.review or 4.5 }}" readonly class="mb-4"></sl-rating>
+
+    <form method="POST" action="/confirm_booking">
+      <input type="hidden" name="listing_id" value="{{ house.id }}">
+
+      <label for="start_date">Start Date:</label><br>
+      <input type="date" id="start_date" name="start_date" required><br><br>
+
+      <label for="end_date">End Date:</label><br>
+      <input type="date" id="end_date" name="end_date" required><br><br>
+
+      <sl-button variant="primary" type="submit" pill>Confirm?</sl-button>
+    </form>
+  </div>
+
+  <!-- Right Side: Image -->
+  <div style="flex: 1; min-width: 300px;">
+    <img src="{{ house.photos }}" alt="{{ house.title }}"
+         style="width: 100%; max-height: 500px; object-fit: cover; border-radius: 8px;">
+  </div>
+
+</div>
+
+{% endblock %}
