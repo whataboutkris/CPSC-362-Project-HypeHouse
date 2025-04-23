@@ -11,9 +11,22 @@ def index():
     print("Index route was called")
     return render_template("pages/index.html")
 
-@main.route("/login")
+@main.route("/login", methods=["GET", "POST"])
 def login_page():
-    print("Login route was called.")
+    print ("Login route was")
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        
+        # Admin credentials (username: admin, password: admin)
+        if username == "admin" and password == "admin":
+            # Redirect to dashboard if the credentials are correct
+            return redirect(url_for('main.dashboard'))
+        else:
+            # Flash an error message if the credentials are incorrect
+            flash("The username/password is incorrect.", "error")
+            return render_template("pages/login.html")
+    
     return render_template("pages/login.html")
 
 @main.route("/dashboard")
