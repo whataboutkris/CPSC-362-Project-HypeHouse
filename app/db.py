@@ -40,20 +40,6 @@ class User(UserMixin, db.Model):
     booked_reservations = db.relationship('Booking', foreign_keys='Booking.booker_id', backref='booker_user', lazy=True)
 
 '''
-class Session:
-    id, user_id, token, expiration
-    id = primary key
-    user_id = foreign key to User table
-    token = unique session token
-    expiration = datetime of when the session expires
-'''
-class Session(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)  # Foreign key to User table
-    token = db.Column(db.String(128), nullable = False)
-    expiration = db.Column(db.DateTime, nullable = False)
-
-'''
 class Listing:
     id, title, name, description, photos, price, host_id
     id = primary key
