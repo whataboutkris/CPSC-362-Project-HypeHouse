@@ -13,6 +13,7 @@ def index():
 
 @main.route("/login")
 def login_page():
+    print("Login route was called.")
     return render_template("pages/login.html")
 
 @main.route("/dashboard")
