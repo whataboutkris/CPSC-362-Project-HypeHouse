@@ -62,7 +62,7 @@ def confirm_booking():
     start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
     end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d')
 
-    booker_id = session.get('user_id') or 1  # fallback for testing
+    booker_id = session.get('user_id') or 1
     listing = Listing.query.get_or_404(listing_id)
     host_id = listing.host_id
 
@@ -77,5 +77,7 @@ def confirm_booking():
     db.session.add(new_booking)
     db.session.commit()
 
-    flash('✅ Booking confirmed!')
+    redirect_target = request.args.get('redirect')
+    if redirect_target == "bookings":
+        return redirect("/dashboard#Bookings")
     return redirect(url_for('main.dashboard'))

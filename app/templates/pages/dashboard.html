@@ -2,7 +2,7 @@
 {% block title %}HypeHouse{% endblock %}
 {% block content %}
 
-<sl-tab-group>
+<sl-tab-group activation="manual" default-panel="Listings">
     <sl-tab slot="nav" panel="Listings">Listings</sl-tab>
     <sl-tab slot="nav" panel="Bookings">Bookings</sl-tab>
 
@@ -19,9 +19,9 @@
                 </div>
 
                 <div slot="footer" style="margin-top: auto;">
-                    <a href="/booking/1">
+                    <a href="/booking/1" target="_blank">
                         <sl-button variant="primary" pill>Book</sl-button>
-                    </a>
+                      </a>
                     <sl-rating value="4.5" readonly></sl-rating>
                 </div>
         </div>
@@ -70,6 +70,17 @@
         align-items: center;
     }
 </style>
+
+<script>
+    // Switch to correct tab on load (e.g., #Bookings)
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabGroup = document.querySelector("sl-tab-group");
+      const fragment = window.location.hash.slice(1);
+      if (fragment) {
+        tabGroup.show(fragment);
+      }
+    });
+  </script>
 
 
 
