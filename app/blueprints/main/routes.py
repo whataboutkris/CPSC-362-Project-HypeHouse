@@ -1,5 +1,6 @@
 from datetime import datetime
 from app.db import User, Listing, Booking, db
+from flask_login import login_required, current_user
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 
 
@@ -30,6 +31,7 @@ def login_page():
     return render_template("pages/login.html")
 
 @main.route("/dashboard")
+#if you're here, you should have "host" privileges!
 def dashboard():
     listings = Listing.query.all() 
     bookings = Booking.query.all()
@@ -41,7 +43,14 @@ def dashboard():
         "https://i.pinimg.com/736x/2d/7d/41/2d7d414222ac5baba7b529d596e7f0b8.jpg"
         
     ]
-    return render_template("pages/dashboard.html", listings=listings, bookings=bookings, image_list=image_list)
+    if request.method == "POST":
+        # Add new listing functionality here (if needed)
+        pass
+
+    return render_template("pages/dashboard.html", listings=listings, bookings = bookings)
+
+    #return render_template("pages/dashboard.html", image_list=image_list)
+    
 
 @main.route("/booking/<int:house_id>")
 def booking(house_id):
