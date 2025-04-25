@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Web Page</title>
+  <title>
+    {% block title %}
+    {% endblock %}
+  </title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
   <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
   <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-900">
   <header class="flex justify-between items-center p-4 bg-gray-800 text-white">
@@ -50,13 +53,13 @@
     {% endif %}
   </header>
 
-  <main class="p-6">
+  <main>
     {% block content %}
     {% endblock content %}
   </main>
 
   <footer class="text-center p-4 text-gray-600">
-    <p>&copy; 2023 My Web Page</p>
+    <p>&copy; 2025 HypeHouse</p>
   </footer>
 </body>
 

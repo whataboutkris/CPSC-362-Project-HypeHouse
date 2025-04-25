@@ -10,7 +10,7 @@ main = Blueprint("main", __name__)
 def index():
     # return index.html
     print("Index route was called")
-    return render_template("pages/index.html")
+    return render_template("pages/splash.html")
 
 @main.route("/login", methods=["GET", "POST"])
 def login_page():
@@ -29,6 +29,14 @@ def login_page():
             return render_template("pages/login.html")
     
     return render_template("pages/login.html")
+
+@main.route("/register", methods=["GET"])
+def register_page():
+    return render_template("pages/register.html")
+
+@main.route("/about")
+def about_page():
+    return render_template("pages/about.html")
 
 @main.route("/dashboard")
 #if you're here, you should have "host" privileges!
