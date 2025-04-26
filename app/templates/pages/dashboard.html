@@ -1,91 +1,111 @@
 {% extends 'ui/base.html' %}
 {% block title %}
-HypeHouse - Dashboard
+  HypeHouse - Dashboard
 {% endblock %}
 {% block content %}
-
 <sl-tab-group activation="manual" default-panel="Listings">
-    <sl-tab slot="nav" panel="Listings">Listings</sl-tab>
-    <sl-tab slot="nav" panel="Bookings">Bookings</sl-tab>
+  <sl-tab slot="nav" panel="Listings">Listings</sl-tab>
+  <sl-tab slot="nav" panel="Bookings">Bookings</sl-tab>
 
-    <!-- Listings Panel -->
-    <sl-tab-panel name="Listings">
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+  <!-- Listing Creation Button -->
+  <sl-button variant="primary" onclick="openListingDialog()">+ Add Listing</sl-button>
 
-            <sl-card class="House-Overview">
-                <img src="https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg" alt="Rental Image"
-                    style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5rem;" />
-                <div>
-                    <strong>Sample House Description</strong><br />
-                    <small>$123 per night(sample testing)</small>
-                </div>
+  <!-- Listing Form Dialog -->
+  <sl-dialog id="listingDialog" label="Create New Listing" class="listing-form-dialog" style="--width: 500px">
+    <form id="createListingForm">
+      <sl-input name="title" label="Title" required></sl-input>
+      <sl-input name="name" label="Name" required></sl-input>
+      <sl-textarea name="description" label="Description" required></sl-textarea>
+      <sl-input name="photos" label="Photo URL(s) (comma-separated)" required></sl-input>
+      <sl-input name="price" label="Price per night" type="number" step="0.01" required></sl-input>
+      <sl-input name="host_id" label="Host ID" type="number" required></sl-input>
+      <sl-button type="submit" variant="success">Submit</sl-button>
+    </form>
+  </sl-dialog>
+
+  <!-- Listings Panel -->
+  <sl-tab-panel name="Listings">
+    <div style="margin-bottom: 1rem;"></div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+      {% for listing in listings %}
+        <sl-card class="House-Overview">
+          <img 
+            src="{{ listing.photos.split(',')[0] if listing.photos else 'https://via.placeholder.com/200x150' }}" 
+            alt="Rental Image"
+            style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5rem;" />
+
+          <div>
+            <strong>{{ listing.title }}</strong><br />
+            <small>${{ listing.price }} per night</small><br />
+            <small>{{ listing.description[:80] }}{% if listing.description|length > 80 %}...{% endif %}</small>
+          </div>
 
                 <div slot="footer" style="margin-top: auto;">
                     <a href="/booking/1" target="_blank">
                         <sl-button variant="primary" pill>Book</sl-button>
-                    </a>
+                      </a>
                     <sl-rating value="4.5" readonly></sl-rating>
                 </div>
         </div>
         </sl-card>
-        </sl-card>
-        </div>
-    </sl-tab-panel>
-
+      {% else %}
+        <p>You have no listings. Add one above!</p>
+      {% endfor %}
+    </div>
+  </sl-tab-panel>
 
     <!-- Bookings Panel -->
     <sl-tab-panel name="Bookings">
-        <h3>Current Bookings</h3>
-
-        {% for booking in bookings %}
+        <h3>Current Booking</h3>
         <sl-card class="House-Overview">
-            <img src="https://placehold.co/300x150" alt="Booking Image" />
-            <strong>Listing ID: {{ booking.listing_id }}</strong><br />
-            Start: {{ booking.start_date.strftime('%Y-%m-%d') }}<br />
-            End: {{ booking.end_date.strftime('%Y-%m-%d') }}<br />
+            <img src="https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg"
+                alt="a house just to vibe in" />
+            <strong>Home</strong><br />
+            April 20 – April 22<br />
+            <small>2 guests • Ocean View</small>
+
             <div slot="footer">
                 <sl-rating value="4.5" readonly></sl-rating>
             </div>
         </sl-card>
-        {% else %}
-        <p>No bookings yet.</p>
-        {% endfor %}
     </sl-tab-panel>
+</sl-tab-group>
 
-    <!-- Shared Styling -->
-    <style>
-        .House-Overview {
-            max-width: 200px;
-            max-height: 400px;
-            color: var(--sl-color-neutral-500);
-        }
+<!-- Shared Styling -->
+<style>
+    .House-Overview {
+        max-width: 200px;
+        max-height: 400px;
+        color: var(--sl-color-neutral-500);
+    }
 
-        img[slot="img"] {
-            width: 100%;
-            height: 150px;
-            display: block;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
+    img[slot="img"] {
+        width: 100%;
+        height: 150px;
+        display: block;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
 
-        .card-overview [slot='footer'] {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    </style>
+    .card-overview [slot='footer'] {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
 
-    <script>
-        // Switch to correct tab on load (e.g., #Bookings)
-        document.addEventListener("DOMContentLoaded", () => {
-            const tabGroup = document.querySelector("sl-tab-group");
-            const fragment = window.location.hash.slice(1);
-            if (fragment) {
-                tabGroup.show(fragment);
-            }
-        });
-    </script>
+<script>
+    // Switch to correct tab on load (e.g., #Bookings)
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabGroup = document.querySelector("sl-tab-group");
+      const fragment = window.location.hash.slice(1);
+      if (fragment) {
+        tabGroup.show(fragment);
+      }
+    });
+  </script>
 
 
 
-    {% endblock %}
+{% endblock %}
