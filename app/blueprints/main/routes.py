@@ -2,9 +2,9 @@ from datetime import datetime
 from app.db import User, Listing, Booking, db
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
+from app.blueprints.main import main
 
-
-main = Blueprint("main", __name__)
+booking = []
 
 @main.route("/")
 def index():
@@ -38,7 +38,7 @@ def register_page():
 def about_page():
     return render_template("pages/about.html")
 
-@main.route("/dashboard")
+@main.route("/dashboard", methods=["GET", "POST"])
 #if you're here, you should have "host" privileges!
 def dashboard():
     listings = Listing.query.all() 
@@ -73,28 +73,39 @@ def booking(house_id):
 
     return render_template("pages/booking.html", house=listing, owner=owner)
 
+# @main.route("/confirm_booking", methods=["POST"])
+# def confirm_booking():
+#     listing_id = request.form['listing_id']
+#     start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
+#     end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d')
+
+#     booker_id = session.get('user_id') or 1
+#     listing = Listing.query.get_or_404(listing_id)
+#     host_id = listing.host_id
+
+#     new_booking = Booking(
+#         listing_id=listing_id,
+#         host_id=host_id,
+#         booker_id=booker_id,
+#         start_date=start_date,
+#         end_date=end_date
+#     )
+
+#     db.session.add(new_booking)
+#     db.session.commit()
+
+#     return redirect("/dashboard#Bookings")
 @main.route("/confirm_booking", methods=["POST"])
 def confirm_booking():
+    global bookings
     listing_id = request.form['listing_id']
-    start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
-    end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d')
+    start_date = request.form['start_date']
+    end_date = request.form['end_date']
 
-    booker_id = session.get('user_id') or 1
-    listing = Listing.query.get_or_404(listing_id)
-    host_id = listing.host_id
+    bookings.append({
+        "listing_id": listing_id,
+        "start_date": start_date,
+        "end_date": end_date
+    })
 
-    new_booking = Booking(
-        listing_id=listing_id,
-        host_id=host_id,
-        booker_id=booker_id,
-        start_date=start_date,
-        end_date=end_date
-    )
-
-    db.session.add(new_booking)
-    db.session.commit()
-
-    redirect_target = request.args.get('redirect')
-    if redirect_target == "bookings":
-        return redirect("/dashboard#Bookings")
-    return redirect(url_for('main.dashboard'))
+    return redirect("/dashboard#Bookings")

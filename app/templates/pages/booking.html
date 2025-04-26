@@ -2,7 +2,7 @@
 {% block title %}
 HypeHouse - {{ house.title }}
 {% endblock %}
-{% endblock %}
+
 {% block content %}
 
 <div style="display: flex; gap: 2rem; align-items: flex-start; padding: 2rem; flex-wrap: wrap;">
@@ -15,7 +15,7 @@ HypeHouse - {{ house.title }}
 
     <sl-rating value="{{ house.review or 4.5 }}" readonly class="mb-4"></sl-rating>
 
-    <form method="POST" action="/confirm_booking?redirect=bookings">
+    <form method="POST" action="/confirm_booking">
       <input type="hidden" name="listing_id" value="{{ house.id }}">
 
       <label for="start_date">Start Date:</label><br>

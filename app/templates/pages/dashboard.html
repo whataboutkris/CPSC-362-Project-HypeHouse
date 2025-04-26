@@ -1,6 +1,6 @@
 {% extends 'ui/base.html' %}
 {% block title %}
-  HypeHouse - Dashboard
+HypeHouse - Dashboard
 {% endblock %}
 {% block content %}
 
@@ -23,7 +23,7 @@
                 <div slot="footer" style="margin-top: auto;">
                     <a href="/booking/1" target="_blank">
                         <sl-button variant="primary" pill>Book</sl-button>
-                      </a>
+                    </a>
                     <sl-rating value="4.5" readonly></sl-rating>
                 </div>
         </div>
@@ -35,55 +35,57 @@
 
     <!-- Bookings Panel -->
     <sl-tab-panel name="Bookings">
-        <h3>Current Booking</h3>
-        <sl-card class="House-Overview">
-            <img src="https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg"
-                alt="a house just to vibe in" />
-            <strong>Home</strong><br />
-            April 20 – April 22<br />
-            <small>2 guests • Ocean View</small>
+        <h3>Current Bookings</h3>
 
+        {% for booking in bookings %}
+        <sl-card class="House-Overview">
+            <img src="https://placehold.co/300x150" alt="Booking Image" />
+            <strong>Listing ID: {{ booking.listing_id }}</strong><br />
+            Start: {{ booking.start_date.strftime('%Y-%m-%d') }}<br />
+            End: {{ booking.end_date.strftime('%Y-%m-%d') }}<br />
             <div slot="footer">
                 <sl-rating value="4.5" readonly></sl-rating>
             </div>
         </sl-card>
+        {% else %}
+        <p>No bookings yet.</p>
+        {% endfor %}
     </sl-tab-panel>
-</sl-tab-group>
 
-<!-- Shared Styling -->
-<style>
-    .House-Overview {
-        max-width: 200px;
-        max-height: 400px;
-        color: var(--sl-color-neutral-500);
-    }
+    <!-- Shared Styling -->
+    <style>
+        .House-Overview {
+            max-width: 200px;
+            max-height: 400px;
+            color: var(--sl-color-neutral-500);
+        }
 
-    img[slot="img"] {
-        width: 100%;
-        height: 150px;
-        display: block;
-        object-fit: cover;
-        flex-shrink: 0;
-    }
+        img[slot="img"] {
+            width: 100%;
+            height: 150px;
+            display: block;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
 
-    .card-overview [slot='footer'] {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-</style>
+        .card-overview [slot='footer'] {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
 
-<script>
-    // Switch to correct tab on load (e.g., #Bookings)
-    document.addEventListener("DOMContentLoaded", () => {
-      const tabGroup = document.querySelector("sl-tab-group");
-      const fragment = window.location.hash.slice(1);
-      if (fragment) {
-        tabGroup.show(fragment);
-      }
-    });
-  </script>
-
+    <script>
+        // Switch to correct tab on load (e.g., #Bookings)
+        document.addEventListener("DOMContentLoaded", () => {
+            const tabGroup = document.querySelector("sl-tab-group");
+            const fragment = window.location.hash.slice(1);
+            if (fragment) {
+                tabGroup.show(fragment);
+            }
+        });
+    </script>
 
 
-{% endblock %}
+
+    {% endblock %}
