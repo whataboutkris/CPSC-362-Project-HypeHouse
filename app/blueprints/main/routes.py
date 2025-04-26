@@ -58,7 +58,7 @@ def dashboard():
     return render_template("pages/dashboard.html", listings=listings, bookings = bookings)
 
     #return render_template("pages/dashboard.html", image_list=image_list)
-    
+
 
 @main.route("/booking/<int:house_id>")
 def booking(house_id):

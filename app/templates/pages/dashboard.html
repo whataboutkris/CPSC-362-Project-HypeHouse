@@ -1,89 +1,181 @@
 {% extends 'ui/base.html' %}
-{% block title %}
-  HypeHouse - Dashboard
-{% endblock %}
+{% block title %}HypeHouse - Dashboard{% endblock %}
+
 {% block content %}
-
 <sl-tab-group activation="manual" default-panel="Listings">
-    <sl-tab slot="nav" panel="Listings">Listings</sl-tab>
-    <sl-tab slot="nav" panel="Bookings">Bookings</sl-tab>
+  <sl-tab slot="nav" panel="Listings">Listings</sl-tab>
+  <sl-tab slot="nav" panel="Bookings">Bookings</sl-tab>
 
-    <!-- Listings Panel -->
-    <sl-tab-panel name="Listings">
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+  <!-- Listing Creation Button -->
+  <sl-button variant="primary" onclick="openListingDialog()">+ Add Listing</sl-button>
 
-            <sl-card class="House-Overview">
-                <img src="https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg" alt="Rental Image"
-                    style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5rem;" />
-                <div>
-                    <strong>Sample House Description</strong><br />
-                    <small>$123 per night(sample testing)</small>
-                </div>
+  <!-- Listing Form Dialog -->
+  <sl-dialog id="listingDialog" label="Create New Listing" class="listing-form-dialog" style="--width: 500px">
+    <form id="createListingForm">
+      <sl-input name="title" label="Title" required></sl-input>
+      <sl-input name="name" label="Name" required></sl-input>
+      <sl-textarea name="description" label="Description" required></sl-textarea>
+      <sl-input name="photos" label="Photo URL(s) (comma-separated)" required></sl-input>
+      <sl-input name="price" label="Price per night" type="number" step="0.01" required></sl-input>
+      <sl-input name="host_id" label="Host ID" type="number" required></sl-input>
+      <sl-button type="submit" variant="success">Submit</sl-button>
+    </form>
+  </sl-dialog>
 
-                <div slot="footer" style="margin-top: auto;">
-                    <a href="/booking/1" target="_blank">
-                        <sl-button variant="primary" pill>Book</sl-button>
-                      </a>
-                    <sl-rating value="4.5" readonly></sl-rating>
-                </div>
-        </div>
-        </sl-card>
-        </sl-card>
-        </div>
-    </sl-tab-panel>
+  <!-- Listings Panel -->
+  <sl-tab-panel name="Listings">
+    <div style="margin-bottom: 1rem;"></div>
 
-
-    <!-- Bookings Panel -->
-    <sl-tab-panel name="Bookings">
-        <h3>Current Booking</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+      {% for listing in listings %}
         <sl-card class="House-Overview">
-            <img src="https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg"
-                alt="a house just to vibe in" />
-            <strong>Home</strong><br />
-            April 20 – April 22<br />
-            <small>2 guests • Ocean View</small>
+          <img 
+            src="{{ listing.photos.split(',')[0] if listing.photos else 'https://via.placeholder.com/200x150' }}" 
+            alt="Rental Image"
+            style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5rem;" />
 
-            <div slot="footer">
-                <sl-rating value="4.5" readonly></sl-rating>
-            </div>
+          <div>
+            <strong>{{ listing.title }}</strong><br />
+            <small>${{ listing.price }} per night</small><br />
+            <small>{{ listing.description[:80] }}{% if listing.description|length > 80 %}...{% endif %}</small>
+          </div>
+
+          <div slot="footer" style="margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
+            <a href="/booking/{{ listing.id }}" target="_blank">
+              <sl-button variant="primary" pill>Book</sl-button>
+            </a>
+
+            <!-- Correct Delete Button -->
+            <sl-button variant="danger" pill class="delete-button" data-listing-id="{{ listing.id }}" style="margin-left: 0.5rem;">
+              Delete
+            </sl-button>
+          </div>
         </sl-card>
-    </sl-tab-panel>
+      {% else %}
+        <p>You have no listings. Add one above!</p>
+      {% endfor %}
+    </div>
+  </sl-tab-panel>
+
+  <!-- Bookings Panel -->
+  <sl-tab-panel name="Bookings">
+    <h3>Current Booking</h3>
+    <sl-card class="House-Overview">
+      <img src="https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg"
+           alt="a house just to vibe in" />
+      <strong>Home</strong><br />
+      April 20 – April 22<br />
+      <small>2 guests • Ocean View</small>
+
+      <div slot="footer">
+        <sl-rating value="4.5" readonly></sl-rating>
+      </div>
+    </sl-card>
+  </sl-tab-panel>
 </sl-tab-group>
 
-<!-- Shared Styling -->
+<!-- Styling -->
 <style>
-    .House-Overview {
-        max-width: 200px;
-        max-height: 400px;
-        color: var(--sl-color-neutral-500);
-    }
+  .House-Overview {
+    max-width: 200px;
+    max-height: 400px;
+    color: var(--sl-color-neutral-500);
+  }
 
-    img[slot="img"] {
-        width: 100%;
-        height: 150px;
-        display: block;
-        object-fit: cover;
-        flex-shrink: 0;
-    }
+  img[slot="img"] {
+    width: 100%;
+    height: 150px;
+    display: block;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
 
-    .card-overview [slot='footer'] {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+  .card-overview [slot='footer'] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 </style>
 
+<!-- Script -->
 <script>
-    // Switch to correct tab on load (e.g., #Bookings)
-    document.addEventListener("DOMContentLoaded", () => {
-      const tabGroup = document.querySelector("sl-tab-group");
-      const fragment = window.location.hash.slice(1);
-      if (fragment) {
-        tabGroup.show(fragment);
+  function openListingDialog() {
+    document.getElementById('listingDialog').show();
+  }
+
+  document.getElementById("createListingForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+
+    const data = {
+      title: form.querySelector('[name="title"]').value,
+      name: form.querySelector('[name="name"]').value,
+      description: form.querySelector('[name="description"]').value,
+      photos: form.querySelector('[name="photos"]').value.split(","),
+      price: parseFloat(form.querySelector('[name="price"]').value),
+      host_id: parseInt(form.querySelector('[name="host_id"]').value)
+    };
+
+    try {
+      const response = await fetch("/api/listings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        alert("Listing created successfully!");
+        location.reload();
+      } else {
+        const err = await response.json();
+        alert("Error: " + (err.message || "Something went wrong."));
       }
+    } catch (err) {
+      console.error(err);
+      alert("Network error. Please try again.");
+    }
+  });
+
+  async function deleteListing(id) {
+    if (!confirm("Are you sure you want to delete this listing?")) return;
+
+    try {
+      const response = await fetch(`/api/listings/${id}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+
+      if (response.ok) {
+        alert("Listing deleted successfully!");
+        location.reload();
+      } else {
+        const err = await response.json();
+        alert("Error: " + (err.message || "Something went wrong."));
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error. Please try again.");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabGroup = document.querySelector("sl-tab-group");
+    const fragment = window.location.hash.slice(1);
+    if (fragment) {
+      tabGroup.show(fragment);
+    }
+
+    // Attach delete listeners
+    document.querySelectorAll(".delete-button").forEach(button => {
+      button.addEventListener("click", () => {
+        const listingId = button.getAttribute("data-listing-id");
+        deleteListing(listingId);
+      });
     });
-  </script>
-
-
-
+  });
+</script>
 {% endblock %}

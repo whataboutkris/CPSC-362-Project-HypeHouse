@@ -56,6 +56,16 @@ class Listing(db.Model):
     photos = db.Column(db.String(500), nullable = False)  # Assuming photos are stored as a comma-separated string
     price = db.Column(db.Float, nullable = False)
     host_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)  # Foreign key to User table
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "name": self.name,
+            "description": self.description,
+            "photos": self.photos,  # (optional: .split(",") if you want to return a list)
+            "price": self.price,
+            "host_id": self.host_id
+        }
 
 '''
 class Booking:
