@@ -1,48 +1,40 @@
-from flask import Blueprint, jsonify, request
-from flask_login import login_required
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required, current_user
+from app.db import db, Listing, Booking
 
-property_blueprint = Blueprint('property', __name__)
+bookings = Blueprint("bookings", __name__)
 
-# SAMPLE 
-bookings = [
-    {
-        "id": 1,
-        "listing_id": 101,
-        "date_start": "2025-04-15",
-        "date_end": "2025-04-20",
-        "booker_id": 123,
-        "host_id": 321
-    }
-]
+@bookings.route('/booking/<int:id>')
+def booking_page(id):
+    # Fetch the listing details from the database
+    listing = Listing.query.get_or_404(id)
+    return render_template('pages/booking.html', listing=listing)
 
-'''
-Shows all bookings
-'''
-@property_blueprint.route('/bookings', methods=['GET'])
-@login_required
-def get_bookings():
-    return jsonify(bookings)
+@bookings.route('/confirm_booking', methods=['POST'])
+def confirm_booking():
+    id = request.form.get('id')
+    start_date = request.form.get('start_date')
+    end_date = request.form.get('end_date')
 
+    # Validate input
+    if not id or not start_date or not end_date:
+        flash('Invalid booking details', 'error')
+        return redirect(url_for('dashboard'))  # ← better: just send them back to dashboard
 
-'''
-Creates a new booking
-'''
-@property_blueprint.route('/bookings', methods=['POST'])
-@login_required
-def add_booking():
-    new_booking = request.json
-    bookings.append(new_booking)
-    return jsonify(new_booking), 201
+    # Fetch the listing
+    listing = Listing.query.get_or_404(id)
 
-'''
-Deletes an existing booking
-'''
-@property_blueprint.route('/bookings/<int:booking_id>', methods=['DELETE'])
-@login_required
-def delete_booking(booking_id):
-    booking = next((b for b in bookings if b["id"] == booking_id), None)
-    if booking:
-        bookings.remove(booking)
-        return jsonify({"message": "Booking deleted"})
-    return jsonify({"error": "Booking not found"}), 404
+    # Create new booking
+    new_booking = Booking(
+        id=listing.id,
+        date_start=start_date,
+        date_end=end_date,
+        booker_id=current_user.id,
+        host_id=listing.host_id
+    )
 
+    db.session.add(new_booking)
+    db.session.commit()
+
+    flash('Booking confirmed successfully!', 'success')
+    return redirect(url_for('dashboard'))
