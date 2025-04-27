@@ -1,111 +1,198 @@
 {% extends 'ui/base.html' %}
-{% block title %}
-  HypeHouse - Dashboard
-{% endblock %}
+{% block title %}HypeHouse - Dashboard{% endblock %}
+
 {% block content %}
 <sl-tab-group activation="manual" default-panel="Listings">
-  <sl-tab slot="nav" panel="Listings">Listings</sl-tab>
-  <sl-tab slot="nav" panel="Bookings">Bookings</sl-tab>
-
-  <!-- Listing Creation Button -->
-  <sl-button variant="primary" onclick="openListingDialog()">+ Add Listing</sl-button>
-
-  <!-- Listing Form Dialog -->
-  <sl-dialog id="listingDialog" label="Create New Listing" class="listing-form-dialog" style="--width: 500px">
-    <form id="createListingForm">
-      <sl-input name="title" label="Title" required></sl-input>
-      <sl-input name="name" label="Name" required></sl-input>
-      <sl-textarea name="description" label="Description" required></sl-textarea>
-      <sl-input name="photos" label="Photo URL(s) (comma-separated)" required></sl-input>
-      <sl-input name="price" label="Price per night" type="number" step="0.01" required></sl-input>
-      <sl-input name="host_id" label="Host ID" type="number" required></sl-input>
-      <sl-button type="submit" variant="success">Submit</sl-button>
-    </form>
-  </sl-dialog>
+  <sl-tab slot="nav" panel="Listings" class="text-lg font-semibold">Listings</sl-tab>
+  <sl-tab slot="nav" panel="Bookings" class="text-lg font-semibold">Bookings</sl-tab>
 
   <!-- Listings Panel -->
   <sl-tab-panel name="Listings">
-    <div style="margin-bottom: 1rem;"></div>
-
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+    <div class="mt-6 flex flex-wrap gap-6 justify-center">
       {% for listing in listings %}
-        <sl-card class="House-Overview">
+        <sl-card class="House-Overview bg-white shadow-lg rounded-lg w-72 p-4 hover:scale-105 transition-transform duration-300 cursor-pointer" onclick="openListingModal('{{ listing.id }}')">
           <img 
-            src="{{ listing.photos.split(',')[0] if listing.photos else 'https://via.placeholder.com/200x150' }}" 
+            src="{{ listing.photos.split(',')[0] if listing.photos else 'https://via.placeholder.com/500x300' }}" 
             alt="Rental Image"
-            style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5rem;" />
+            class="w-full h-48 object-cover rounded-lg mb-4" />
 
-          <div>
-            <strong>{{ listing.title }}</strong><br />
-            <small>${{ listing.price }} per night</small><br />
-            <small>{{ listing.description[:80] }}{% if listing.description|length > 80 %}...{% endif %}</small>
+          <div class="text-lg font-semibold mb-2">{{ listing.title }}</div>
+          <small class="text-gray-600">${{ listing.price }} per night</small><br />
+          <p class="text-gray-500 text-sm mt-2">{{ listing.description[:80] }}{% if listing.description|length > 80 %}...{% endif %}</p>
+
+          <div slot="footer" class="mt-4 flex justify-between items-center">
+            <a href="/booking/{{ listing.id }}" target="_blank" onclick="event.stopPropagation();">
+              <sl-button variant="primary" pill>Book</sl-button>
+            </a>
+
+            <!-- Correct Delete Button -->
+            <sl-button variant="danger" pill class="delete-button" data-listing-id="{{ listing.id }}">
+              Delete
+            </sl-button>
           </div>
-
-                <div slot="footer" style="margin-top: auto;">
-                    <a href="/booking/1" target="_blank">
-                        <sl-button variant="primary" pill>Book</sl-button>
-                      </a>
-                    <sl-rating value="4.5" readonly></sl-rating>
-                </div>
-        </div>
         </sl-card>
       {% else %}
-        <p>You have no listings. Add one above!</p>
+        <p class="text-gray-600 text-center">You have no listings. Add one below!</p>
       {% endfor %}
+    </div>
+
+    <!-- Listing Creation Button moved below cards -->
+    <div class="mt-6 flex justify-center">
+      <sl-button variant="primary" onclick="openListingDialog()" class="mb-6">+ Add Listing</sl-button>
     </div>
   </sl-tab-panel>
 
-    <!-- Bookings Panel -->
-    <sl-tab-panel name="Bookings">
-        <h3>Current Booking</h3>
-        <sl-card class="House-Overview">
-            <img src="https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg"
-                alt="a house just to vibe in" />
-            <strong>Home</strong><br />
-            April 20 – April 22<br />
-            <small>2 guests • Ocean View</small>
+  <!-- Bookings Panel -->
+  <sl-tab-panel name="Bookings">
+    <h3 class="text-2xl font-semibold mb-4">Current Booking</h3>
+    <sl-card class="House-Overview bg-white shadow-lg rounded-lg p-4">
+      <img src="https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg" alt="a house just to vibe in" class="w-full h-48 object-cover rounded-lg mb-4"/>
+      <strong class="text-lg font-semibold">Home</strong><br />
+      <small class="text-gray-600">April 20 – April 22</small><br />
+      <small class="text-gray-600">2 guests • Ocean View</small>
 
-            <div slot="footer">
-                <sl-rating value="4.5" readonly></sl-rating>
-            </div>
-        </sl-card>
-    </sl-tab-panel>
+      <div slot="footer" class="mt-4">
+        <sl-rating value="4.5" readonly></sl-rating>
+      </div>
+    </sl-card>
+  </sl-tab-panel>
 </sl-tab-group>
 
-<!-- Shared Styling -->
-<style>
-    .House-Overview {
-        max-width: 200px;
-        max-height: 400px;
-        color: var(--sl-color-neutral-500);
-    }
+<!-- Modal for Showing Listing Details -->
+<sl-dialog id="listingModal" label="Listing Details" class="listing-modal">
+  <div id="listingModalContent"></div>
+</sl-dialog>
 
-    img[slot="img"] {
-        width: 100%;
-        height: 150px;
-        display: block;
-        object-fit: cover;
-        flex-shrink: 0;
-    }
+<!-- Listing Form Dialog -->
+<sl-dialog id="listingDialog" label="Create New Listing" class="listing-form-dialog" style="--width: 500px">
+  <form id="createListingForm">
+    <sl-input name="title" label="Title" required class="mb-4"></sl-input>
+    <sl-input name="name" label="Name" required class="mb-4"></sl-input>
+    <sl-textarea name="description" label="Description" required class="mb-4"></sl-textarea>
+    <sl-input name="photos" label="Photo URL(s) (comma-separated)" required class="mb-4"></sl-input>
+    <sl-input name="price" label="Price per night" type="number" step="0.01" required class="mb-4"></sl-input>
+    <sl-input name="host_id" label="Host ID" type="number" required class="mb-4"></sl-input>
+    <sl-button type="submit" variant="success">Submit</sl-button>
+  </form>
+</sl-dialog>
 
-    .card-overview [slot='footer'] {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+<!-- Styling -->
+<style>.House-Overview {
+    max-width: 320px;
+    color: var(--sl-color-neutral-500);
+    transition: transform 0.3s ease;
+  }.House-Overview:hover {
+    transform: scale(1.05);
+  }.House-Overview img {
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+  }.card-overview [slot='footer'] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 </style>
 
+<!-- Script -->
 <script>
-    // Switch to correct tab on load (e.g., #Bookings)
-    document.addEventListener("DOMContentLoaded", () => {
-      const tabGroup = document.querySelector("sl-tab-group");
-      const fragment = window.location.hash.slice(1);
-      if (fragment) {
-        tabGroup.show(fragment);
+  function openListingDialog() {
+    document.getElementById('listingDialog').show();
+  }
+
+  function openListingModal(listingId) {
+    // Fetch listing details using the listing ID
+    fetch(`/api/listings/${listingId}`).then(response => response.json()).then(listing => {
+        const modalContent = `
+          <h2 class="text-xl font-semibold">${listing.title}</h2>
+          <p><strong>Description:</strong> ${listing.description}</p>
+          <p><strong>Price:</strong> $${listing.price} per night</p>
+          <p><strong>Photos:</strong></p>
+          <div class="flex flex-wrap gap-2">
+            ${listing.photos.split(',').map(photo => `<img src="${photo}" class="w-32 h-32 object-cover rounded-lg" />`).join('')}
+          </div>
+        `;
+        document.getElementById('listingModalContent').innerHTML = modalContent;
+        document.getElementById('listingModal').show();
+      }).catch(err => {
+        console.error('Error fetching listing details:', err);
+        alert('An error occurred. Please try again.');
+      });
+  }
+
+  document.getElementById("createListingForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+
+    const data = {
+      title: form.querySelector('[name="title"]').value,
+      name: form.querySelector('[name="name"]').value,
+      description: form.querySelector('[name="description"]').value,
+      photos: form.querySelector('[name="photos"]').value.split(","),
+      price: parseFloat(form.querySelector('[name="price"]').value),
+      host_id: parseInt(form.querySelector('[name="host_id"]').value)
+    };
+
+    try {
+      const response = await fetch("/api/listings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        alert("Listing created successfully!");
+        location.reload();
+      } else {
+        const err = await response.json();
+        alert("Error: " + (err.message || "Something went wrong."));
       }
+    } catch (err) {
+      console.error(err);
+      alert("Network error. Please try again.");
+    }
+  });
+
+  async function deleteListing(id) {
+    if (!confirm("Are you sure you want to delete this listing?")) return;
+
+    try {
+      const response = await fetch(`/api/listings/${id}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+
+      if (response.ok) {
+        alert("Listing deleted successfully!");
+        location.reload();
+      } else {
+        const err = await response.json();
+        alert("Error: " + (err.message || "Something went wrong."));
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error. Please try again.");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabGroup = document.querySelector("sl-tab-group");
+    const fragment = window.location.hash.slice(1);
+    if (fragment) {
+      tabGroup.show(fragment);
+    }
+
+    // Attach delete listeners
+    document.querySelectorAll(".delete-button").forEach(button => {
+      button.addEventListener("click", () => {
+        const listingId = button.getAttribute("data-listing-id");
+        deleteListing(listingId);
+      });
     });
-  </script>
-
-
-
+  });
+</script>
 {% endblock %}
