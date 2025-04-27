@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from app.blueprints.main import main
 
-booking = []
+booking_db = []
 
 @main.route("/")
 def index():
@@ -102,7 +102,7 @@ def confirm_booking():
     start_date = request.form['start_date']
     end_date = request.form['end_date']
 
-    bookings.append({
+    booking_db.append({
         "listing_id": listing_id,
         "start_date": start_date,
         "end_date": end_date
