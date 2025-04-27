@@ -1,6 +1,6 @@
 {% extends 'ui/base.html' %}
 {% block title %}
-HypeHouse - {{ house.title }}
+HypeHouse - {{ listing.title }}
 {% endblock %}
 
 {% block content %}
@@ -9,14 +9,14 @@ HypeHouse - {{ house.title }}
 
   <!-- Left Side: Text & Form -->
   <div style="flex: 1; min-width: 300px;">
-    <h1 class="text-3xl font-bold mb-2">{{ house.title }}</h1>
-    <p class="mb-4">{{ house.description }}</p>
-    <p class="text-xl font-semibold mb-2">${{ house.price }} per night</p>
+    <h1 class="text-3xl font-bold mb-2">{{ listing.title }}</h1>
+    <p class="mb-4">{{ listing.description }}</p>
+    <p class="text-xl font-semibold mb-2">${{ listing.price }} per night</p>
 
-    <sl-rating value="{{ house.review or 4.5 }}" readonly class="mb-4"></sl-rating>
+    <sl-rating value="{{ listing.review or 4.5 }}" readonly class="mb-4"></sl-rating>
 
-    <form method="POST" action="/confirm_booking">
-      <input type="hidden" name="listing_id" value="{{ house.id }}">
+    <form method="POST" action="{{ url_for('bookings.confirm_booking') }}">
+      <input type="hidden" name="listing_id" value="{{ listing.id }}">
 
       <label for="start_date">Start Date:</label><br>
       <input type="date" id="start_date" name="start_date" required><br><br>
@@ -30,7 +30,7 @@ HypeHouse - {{ house.title }}
 
   <!-- Right Side: Image -->
   <div style="flex: 1; min-width: 300px;">
-    <img src="{{ house.photos }}" alt="{{ house.title }}"
+    <img src="{{ listing.photos.split(',')[0] }}" alt="{{ listing.title }}"
          style="width: 100%; max-height: 500px; object-fit: cover; border-radius: 8px;">
   </div>
 

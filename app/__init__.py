@@ -10,6 +10,7 @@ from app.blueprints.api import api
 from app.blueprints.main import main
 from app.blueprints.htmx import htmx
 from app.blueprints.api.auth import auth_blueprint
+from app.blueprints.api.bookings import bookings
 from app.blueprints.api.listings import listings
 
 from .db import db  # Import db object from db.py
@@ -48,6 +49,7 @@ def create_app():
 
   app.register_blueprint(main) # Main blueprint is routing for the views and templates
   app.register_blueprint(listings, url_prefix="/api")
+  app.register_blueprint(bookings, url_prefix="/api")
   app.register_blueprint(api, url_prefix="/api") # API blueprint is routing for the API
   app.register_blueprint(htmx, url_prefix="/htmx") # HTMX blueprint is routing for the HTMX calls
   app.register_blueprint(auth_blueprint, url_prefix="/auth")
