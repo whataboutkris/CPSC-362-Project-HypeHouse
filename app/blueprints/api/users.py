@@ -24,7 +24,6 @@ def user(id):
         data = request.get_json()
         user.name = data.get("name", user.name)
         user.email = data.get("email", user.email)
-        user.phone_number = data.get("phone_number", user.phone_number)
         user.is_host = data.get("is_host", user.is_host)
         db.session.commit()
         return jsonify({"message": "User updated successfully"}), 200

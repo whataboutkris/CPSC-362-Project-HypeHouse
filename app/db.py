@@ -12,9 +12,7 @@ class User:
     name = first_name + last_name
     email = unique
     password_hash = hashed password
-    phone_number = unique
     is_host = True if the user is a host, False otherwise
-    bookings = relationship to Booking table
     listings = relationship to Listing table
 '''
 class User(UserMixin, db.Model):
@@ -32,7 +30,6 @@ class User(UserMixin, db.Model):
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "phone_number": self.phone_number,
             "is_host": self.is_host
         }
     hosted_bookings = db.relationship('Booking', foreign_keys='Booking.host_id', backref='host_user', lazy=True)
