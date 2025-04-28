@@ -39,6 +39,7 @@ def about_page():
     return render_template("pages/about.html")
 
 @main.route("/dashboard", methods=["GET", "POST"])
+@login_required
 def dashboard():
     listings = Listing.query.all() 
     bookings = Booking.query.filter((Booking.booker_id==current_user.id) |

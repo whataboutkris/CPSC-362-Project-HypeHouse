@@ -13,6 +13,7 @@ def booking_page(id):
     return render_template('pages/booking.html', listing=listing)
 
 @bookings.route('/confirm_booking', methods=['POST'])
+@login_required
 def confirm_booking():
     listing_id = request.form.get('listing_id')  
     start_date = request.form.get('start_date')
@@ -54,12 +55,13 @@ def confirm_booking():
 
 #Delete a booking
 @bookings.route('/bookings/<int:id>', methods=['DELETE'])
+@login_required
 def cancel_booking(id):
     booking = Booking.query.get_or_404(id)
 
     # Make sure the user is allowed to cancel
-    #if booking.booker_id != current_user.id:
-        #return {"message": "Unauthorized"}, 403
+    if booking.booker_id != current_user.id:
+        return {"message": "Unauthorized"}, 403
 
     db.session.delete(booking)
     db.session.commit()

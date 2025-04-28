@@ -51,6 +51,7 @@ def get_listings():
     return jsonify([listing.to_dict() for listing in listings]), 200
 
 @listings.route("/listings", methods=["POST"])
+@login_required
 def create_listing():
     data = request.get_json()
     new_listing = Listing(
@@ -66,6 +67,7 @@ def create_listing():
     return jsonify({"message": "Listing created successfully"}), 201
 
 @listings.route("/listings/<int:id>", methods=["GET", "PATCH", "DELETE"])
+@login_required
 def handle_listing(id):
     listing = Listing.query.get_or_404(id)
 
