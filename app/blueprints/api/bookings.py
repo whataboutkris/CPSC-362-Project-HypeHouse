@@ -19,7 +19,7 @@ def confirm_booking():
     # Validate input
     if not id or not start_date or not end_date:
         flash('Invalid booking details', 'error')
-        return redirect(url_for('dashboard'))  # ← better: just send them back to dashboard
+        return redirect(url_for('main.dashboard'))  # ← better: just send them back to dashboard
 
     # Fetch the listing
     listing = Listing.query.get_or_404(id)
