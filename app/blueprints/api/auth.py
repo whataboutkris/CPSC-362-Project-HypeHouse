@@ -1,24 +1,27 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import db
-from app.db import User
+from app.db import db, User
 
 auth_blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
-
+#User Creation Handled Here
 @auth_blueprint.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
     if User.query.filter_by(email=data['email']).first():
         return jsonify({'message': 'User already exists'}), 409
 
-    hashed_password = generate_password_hash(data['password'], method='sha256')
+    hashed_password = generate_password_hash(data['password'])
+    
+    # Create new user
     new_user = User(
         email=data['email'],
         name=data['name'],
-        password=hashed_password
+        password_hash=hashed_password
     )
+    
+    # Save user to database
     db.session.add(new_user)
     db.session.commit()
 

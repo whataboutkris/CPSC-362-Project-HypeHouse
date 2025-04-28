@@ -20,7 +20,6 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(100), nullable = False)
     email = db.Column(db.String(100), unique = True, nullable = False)
-    phone_number = db.Column(db.String(15), nullable = False)
     password_hash = db.Column(db.String(128), nullable = False)
     is_host = db.Column(db.Boolean, default = False)  # True if the user is a host, False otherwise
     # bookings = db.relationship('Booking', backref='user', lazy=True)  # Relationship to Booking table
@@ -36,7 +35,6 @@ class User(UserMixin, db.Model):
             "is_host": self.is_host
         }
     hosted_bookings = db.relationship('Booking', foreign_keys='Booking.host_id', backref='host_user', lazy=True)
-
     booked_reservations = db.relationship('Booking', foreign_keys='Booking.booker_id', backref='booker_user', lazy=True)
 
 '''
@@ -84,3 +82,5 @@ class Booking(db.Model):
     booker_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)  # Foreign key to User table
     start_date = db.Column(db.DateTime, nullable = False)
     end_date = db.Column(db.DateTime, nullable = False)
+    listing = db.relationship('Listing', backref='bookings')
+    

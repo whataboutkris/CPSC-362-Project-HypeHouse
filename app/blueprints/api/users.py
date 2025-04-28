@@ -11,11 +11,11 @@ def get_users():
     users = User.query.all()
     return jsonify([user.to_dict() for user in users]), 200
 
-# handle user creation somewhere else? (maybe)
+# handle user creation somewhere else? (maybe) --> creation handled in auth.py
 
 @users.route("/users/<int:id>", methods=["GET", "PATCH", "DELETE"])
 def user(id):
-    user = User.query.get_or_404(id)
+    user = User.query.get_or_404(id)                    
     
     if request.method == "GET":
         return jsonify(user.to_dict()), 200

@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+import os
 
 '''
 We import all the blueprints that we created in the blueprints folder.
@@ -25,7 +26,7 @@ def create_app():
 
   # TODO: set config from environment variables
   app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-  app.config['SECRET_KEY'] = 'your-secret-key' #
+  app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key')
   app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
   app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -37,6 +38,7 @@ def create_app():
   '''
 
   login_manager.init_app(app) #init extension
+  login_manager.login_view = 'auth.login'  # redirects to /auth/login if unauthorized
 
   from app.db import User #import here in case of circular imports
 
