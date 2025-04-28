@@ -21,7 +21,7 @@ def confirm_booking():
     if not listing_id or not start_date or not end_date:
         flash('Invalid booking details', 'error')
         print("booking error occured")
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('main.main.dashboard'))
 
     # Fetch the listing
     listing = Listing.query.get_or_404(listing_id)

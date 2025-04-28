@@ -25,7 +25,7 @@ def login_page():
             return redirect(url_for('main.dashboard'))
         else:
             # Flash an error message if the credentials are incorrect
-            flash("The username/password is incorrect.", "error")
+            flash("The username/password is incorrect.", "login_error")
             return render_template("pages/login.html")
     
     return render_template("pages/login.html")
@@ -39,7 +39,6 @@ def about_page():
     return render_template("pages/about.html")
 
 @main.route("/dashboard", methods=["GET", "POST"])
-#if you're here, you should have "host" privileges!
 def dashboard():
     listings = Listing.query.all() 
     bookings = Booking.query.all()
@@ -55,7 +54,24 @@ def dashboard():
         # Add new listing functionality here (if needed)
         pass
 
-    return render_template("pages/dashboard.html", listings=listings, bookings = bookings)
+    return render_template("pages/dashboard.html", listings=listings, bookings=bookings)
 
     #return render_template("pages/dashboard.html", image_list=image_list)
 
+@main.route("/api/listings", methods=["POST"])
+def create_listing():
+    data = request.get_json()
+
+    new_listing = Listing (
+        title=data['title'],
+        name=data['name'],
+        description=data['description'],
+        photos=",".join(data['photos']),
+        price=data['price'],
+        host_id=data['host_id']
+    )
+
+    db.session.add(new_listing)
+    db.session.commit()
+
+    return {"message": "Listing created successfully"}, 201
