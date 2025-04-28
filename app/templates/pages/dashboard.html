@@ -58,6 +58,9 @@
           <small class="text-gray-600">Hosted by: {{ booking.listing.name }}</small><br />
   
           <div slot="footer" class="mt-4">
+            <a href="{{ url_for('bookings.inbox', booking_id=booking.id) }}" onclick="event.stopPropagation();">
+              <sl-button variant="success" pill>Open Chat</sl-button>
+            </a>
             <sl-button variant="danger" pill onclick="cancelBooking('{{ booking.id }}', this)">Cancel</sl-button>
           </div>
         </sl-card>

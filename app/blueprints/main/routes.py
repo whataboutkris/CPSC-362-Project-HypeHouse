@@ -41,15 +41,16 @@ def about_page():
 @main.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     listings = Listing.query.all() 
-    bookings = Booking.query.all()
-    image_list = [
-        "https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg",
-        "https://media.timeout.com/images/105931772/750/562/image.jpg",
-        "https://miro.medium.com/v2/resize:fit:4400/1*BOiBE_Aib2o1nulkFqdcGA.jpeg",
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToQzZZNZxA5kW3grRqMm5GcCqRVRve7liCIw&s",
-        "https://i.pinimg.com/736x/2d/7d/41/2d7d414222ac5baba7b529d596e7f0b8.jpg"
+    bookings = Booking.query.filter((Booking.booker_id==current_user.id) |
+                                    (Booking.host_id==current_user.id)).all()
+    # image_list = [
+    #     "https://www.houseplans.net/news/wp-content/uploads/2023/07/57260-768.jpeg",
+    #     "https://media.timeout.com/images/105931772/750/562/image.jpg",
+    #     "https://miro.medium.com/v2/resize:fit:4400/1*BOiBE_Aib2o1nulkFqdcGA.jpeg",
+    #     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToQzZZNZxA5kW3grRqMm5GcCqRVRve7liCIw&s",
+    #     "https://i.pinimg.com/736x/2d/7d/41/2d7d414222ac5baba7b529d596e7f0b8.jpg"
         
-    ]
+    # ]
     if request.method == "POST":
         # Add new listing functionality here (if needed)
         pass

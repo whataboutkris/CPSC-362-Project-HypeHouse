@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.db import db, Listing, Booking
+from app.db import db, Listing, Booking, Message
 from datetime import datetime
+from flask import abort
 
 bookings = Blueprint("bookings", __name__)
 
@@ -64,3 +65,26 @@ def cancel_booking(id):
     db.session.commit()
 
     return {"message": "Booking cancelled successfully!"}, 200
+
+@bookings.route("/inbox/<booking_id>", methods=["GET", "POST"])
+def inbox(booking_id):
+    booking = Booking.query.get_or_404(booking_id)
+
+    if current_user.id not in[booking.booker_id, booking.host_id]:
+        abort(403)
+
+    if request.method == "POST":
+        content = request.form.get("message")
+        if content:
+            new_message = Message(
+                booking_id=booking.id,
+                sender_id=current_user.id,
+                content=content
+                )
+            db.session.add(new_message)
+            db.session.commit()
+            flash("Message sent!", "Success")
+        return redirect(url_for('bookings.inbox', booking_id=booking.id))
+    
+    messages = Message.query.filter_by(booking_id=booking.id).order_by(Message.timestamp)
+    return render_template("pages/inbox.html", booking=booking, messages=messages)

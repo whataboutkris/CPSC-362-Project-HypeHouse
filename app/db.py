@@ -1,6 +1,7 @@
 # app/db.py
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from datetime import datetime
 # Initialize the db object
 db = SQLAlchemy()
 
@@ -84,3 +85,9 @@ class Booking(db.Model):
     end_date = db.Column(db.DateTime, nullable = False)
     listing = db.relationship('Listing', backref='bookings')
     
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    booking_id = db.Column(db.Integer, db.ForeignKey('booking.id'), nullable = False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    content = db.Column(db.Text, nullable = False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)

@@ -1,0 +1,37 @@
+{% extends 'ui/base.html' %}
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-6 text-center">Chat for Booking #{{ booking.id }}</h2>
+
+<div class="space-y-4">
+  {% for message in messages %}
+    <div class="flex justify-center mb-4">
+      <sl-card class="w-full max-w-md">
+        <div slot="header" class="flex items-center justify-between">
+          {% if message.sender_id == current_user.id %}
+            <strong>You</strong>
+          {% elif message.sender_id == booking.host_id %}
+            <strong>Host</strong>
+          {% elif message.sender_id == booking.booker_id %}
+            <strong>Renter</strong>
+          {% else %}
+            <strong>Unknown</strong>
+          {% endif %}
+          <small>{{ message.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+        </div>
+
+        <p class="text-gray-700">{{ message.content }}</p>
+      </sl-card>
+    </div>
+  {% else %}
+    <p class="text-center text-gray-500">No messages yet. Start the conversation!</p>
+  {% endfor %}
+</div>
+
+<!-- Message sending form -->
+<form method="POST" class="max-w-md mx-auto mt-6 space-y-4">
+  <sl-textarea name="message" label="Your Message" required></sl-textarea>
+  <sl-button type="submit" variant="primary" pill>Send Message</sl-button>
+</form>
+{% endblock %}
