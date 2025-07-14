@@ -48,4 +48,3 @@ Check out the full walkthrough here:
 
 ---
 
-## 📂 Project Structure
