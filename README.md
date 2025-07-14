@@ -1,4 +1,4 @@
-# Hypehouse 🏠🎥
+# Hypehouse (CPSC-362 Project)🏠🎥
 
 [![Watch Demo](https://img.shields.io/badge/Watch-Demo-red)]([https://youtu.be/mcJAs9nlm5A](https://youtu.be/mcJAs9nIm5A?si=XwfS9Ta8EWii-QNx))
 
@@ -10,7 +10,7 @@
 
 Unlike traditional rental platforms like Airbnb, **Hypehouse** reimagines short-term stays as hubs for creativity and connection. The platform provides:
 
-CPSC-362 Project for CSU Fullerton
+
 - 🛏️ **Luxury, curated stays** for filming, relaxing, and networking  
 - 🌐 **A social ecosystem** where creators can discover and connect with each other  
 - 🎥 **Production-friendly spaces** optimized for content creation  
