@@ -1,6 +1,6 @@
 # Hypehouse (CPSC-362 Project)🏠🎥
 
-[![Watch Demo](https://img.shields.io/badge/Watch-Demo-red)]([https://youtu.be/mcJAs9nlm5A](https://youtu.be/mcJAs9nIm5A?si=XwfS9Ta8EWii-QNx))
+[![Watch Demo](https://img.shields.io/badge/Watch-Demo-red)]([https://www.youtube.com/watch?v=mcJAs9nIm5A](https://www.youtube.com/watch?v=mcJAs9nIm5A)) https://www.youtube.com/watch?v=mcJAs9nIm5A
 
 **Hypehouse** is a unique rental platform built for **content creators**, **vloggers**, and **influencers**. More than just accommodation, it offers an immersive, community-oriented experience where creators can collaborate, grow, and thrive together.
 
